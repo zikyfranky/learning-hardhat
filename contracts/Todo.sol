@@ -59,19 +59,96 @@ contract Todo {
     
     /** 
     * @notice Function responsible for deleting user's task by id
-    * @param _user The creator of the tasks
     * @param _id index of array to be deleted
     */
 
-    function removeUserTask(address _user, uint256 _id) public taskExists(_user, _id) {
+    function removeUserTask(uint256 _id) public taskExists(msg.sender, _id) {
         // @TODO Make this Gas Efficient
         
         // Shift all array elements backwards which override the task to be deleted, this is not gas efficient 
 
-        for (uint i = _id; i < usersTasks[_user].length-1; i++){
-            usersTasks[_user][i] = usersTasks[_user][i+1];
+        for (uint i = _id; i < usersTasks[msg.sender].length-1; i++){
+            usersTasks[msg.sender][i] = usersTasks[msg.sender][i+1];
         }
 
-        usersTasks[_user].pop(); // deletes last element
+        usersTasks[msg.sender].pop(); // deletes last element
+    }
+
+    
+    /** 
+    * @notice Function responsible for editing/modifying a specific task
+    * @param _id index of task to be modified
+    * @param _task The updated task
+    * @param _owner  The Updated author
+    * @param _date  The Updated date
+    * @param _isDone  The Updated status
+    */
+
+    function updateTask(uint256 _id, string memory _task, string memory _owner, uint256 _date, bool _isDone) public taskExists(msg.sender, _id) {
+        Task memory task_ = usersTasks[msg.sender][_id];
+        task_.task = _task;
+        task_.owner = _owner;
+        task_.date = _date;
+        task_.isDone = _isDone;
+
+        usersTasks[msg.sender][_id] = task_;
+    }
+    
+    /** 
+    * @notice Function responsible for editing/modifying a specific task's task
+    * @param _id index of task to be modified
+    * @param _task The updated task
+    */
+
+    function updateTaskText(uint256 _id, string memory _task) public taskExists(msg.sender, _id) {
+        usersTasks[msg.sender][_id].task = _task;
+    }
+    
+    /** 
+    * @notice Function responsible for editing/modifying a specific task's owner
+    * @param _id index of task to be modified
+    * @param _owner The updated task
+    */
+
+    function updateTaskOwner(uint256 _id, string memory _owner) public taskExists(msg.sender, _id) {
+        usersTasks[msg.sender][_id].owner = _owner;
+    }
+    
+    /** 
+    * @notice Function responsible for editing/modifying a specific task's task
+    * @param _id index of task to be modified
+    * @param _date The updated task
+    */
+
+    function updateTaskDate(uint256 _id, uint256 _date) public taskExists(msg.sender, _id) {
+        usersTasks[msg.sender][_id].date = _date;
+    }
+    
+    /** 
+    * @notice Function responsible for editing/modifying a specific task's isDone
+    * @param _id index of task to be modified
+    * @param _isDone The updated task
+    */
+
+    function updateTaskStatus(uint256 _id, bool _isDone) public taskExists(msg.sender, _id) {
+        usersTasks[msg.sender][_id].isDone = _isDone;
+    }
+    
+    /** 
+    * @notice Function responsible for marking task as done
+    * @param _id index of task to be modified
+    */
+
+    function markTaskAsComplete(uint256 _id) public taskExists(msg.sender, _id) {
+        usersTasks[msg.sender][_id].isDone = true;
+    }
+    
+    /** 
+    * @notice Function responsible for marking task as undone
+    * @param _id index of task to be modified
+    */
+
+    function markTaskAsIncomplete(uint256 _id) public taskExists(msg.sender, _id) {
+        usersTasks[msg.sender][_id].isDone = false;
     }
 }
