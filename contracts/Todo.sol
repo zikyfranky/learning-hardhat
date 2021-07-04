@@ -12,16 +12,22 @@ contract Todo {
         string task;
     }
 
-    Task[] tasks;
+    mapping(address=>Task[]) usersTasks;
+
+    /** 
+    * @notice function responsible for the creation of tasks
+    * @param _task The task to be created
+    * @param _owner  The author of the task
+    */
 
     function createTask(string memory _task, string memory _owner) public {
         Task memory task_;
-        task_.id = tasks.length;
+        task_.id = usersTasks[msg.sender].length;
         task_.date = block.timestamp;
         task_.owner = _owner;
         task_.task = _task;
         // isDone value is false by default 
 
-        tasks.push(task_);
+        usersTasks[msg.sender].push(task_);
     }
 }
