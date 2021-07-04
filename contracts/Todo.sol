@@ -14,6 +14,12 @@ contract Todo {
 
     mapping(address=>Task[]) usersTasks;
 
+    modifier taskExists(address _user, uint256 _id) {
+        uint256 uTaskLength = usersTasks[_user].length;
+        require(_id <= uTaskLength, "Index doesn't exists");
+        _;
+    }
+
     /** 
     * @notice Function responsible for the creation of tasks
     * @param _task The task to be created
@@ -38,9 +44,8 @@ contract Todo {
     * @param _id The index of the task
     */
 
-    function getSingleUserTask(address _user, uint256 _id) public view returns(Task memory task_) {
+    function getSingleUserTask(address _user, uint256 _id) public view taskExists(_user, _id) returns(Task memory task_) {
         task_ = usersTasks[_user][_id];
-        require(task_.date != 0 && task_.date <= block.timestamp, "Task with id doesn't exists");
     }
     
     /** 
@@ -50,5 +55,23 @@ contract Todo {
 
     function getUserTasks(address _user) public view returns(Task[] memory tasks_) {
         tasks_ = usersTasks[_user];
+    }
+    
+    /** 
+    * @notice Function responsible for deleting user's task by id
+    * @param _user The creator of the tasks
+    * @param _id index of array to be deleted
+    */
+
+    function removeUserTask(address _user, uint256 _id) public taskExists(_user, _id) {
+        // @TODO Make this Gas Efficient
+        
+        // Shift all array elements backwards which override the task to be deleted, this is not gas efficient 
+
+        for (uint i = _id; i < usersTasks[_user].length-1; i++){
+            usersTasks[_user][i] = usersTasks[_user][i+1];
+        }
+
+        usersTasks[_user].pop(); // deletes last element
     }
 }
