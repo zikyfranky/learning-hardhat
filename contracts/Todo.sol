@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 
-pragma solidity ^0.8.6;
+pragma solidity ^0.8.4;
 
 contract Todo {
 
@@ -12,7 +12,7 @@ contract Todo {
         string task;
     }
 
-    mapping(address=>Task[]) usersTasks;
+    mapping(address=>Task[]) public usersTasks;
 
     modifier taskExists(address _user, uint256 _id) {
         uint256 uTaskLength = usersTasks[_user].length;
@@ -107,7 +107,7 @@ contract Todo {
     /** 
     * @notice Function responsible for editing/modifying a specific task's owner
     * @param _id index of task to be modified
-    * @param _owner The updated task
+    * @param _owner The updated owner
     */
 
     function updateTaskOwner(uint256 _id, string memory _owner) public taskExists(msg.sender, _id) {
@@ -115,9 +115,9 @@ contract Todo {
     }
     
     /** 
-    * @notice Function responsible for editing/modifying a specific task's task
+    * @notice Function responsible for editing/modifying a specific task's date
     * @param _id index of task to be modified
-    * @param _date The updated task
+    * @param _date The updated date
     */
 
     function updateTaskDate(uint256 _id, uint256 _date) public taskExists(msg.sender, _id) {
@@ -127,7 +127,7 @@ contract Todo {
     /** 
     * @notice Function responsible for editing/modifying a specific task's isDone
     * @param _id index of task to be modified
-    * @param _isDone The updated task
+    * @param _isDone The updated isDone
     */
 
     function updateTaskStatus(uint256 _id, bool _isDone) public taskExists(msg.sender, _id) {
