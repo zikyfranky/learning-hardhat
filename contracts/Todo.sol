@@ -63,15 +63,17 @@ contract Todo {
     */
 
     function removeUserTask(uint256 _id) public taskExists(msg.sender, _id) {
-        // @TODO Make this Gas Efficient
-        
-        // Shift all array elements backwards which override the task to be deleted, this is not gas efficient 
+        // Get last element index (indices start from 0)
+        uint256 lastIndex = usersTasks[msg.sender].length - 1;
+        // Fetch the task and store in a variable
+        Task memory task = usersTasks[msg.sender][lastIndex];
+        // Update  task id to match deleted id
+        task.id = _id;
+        // Replace task to be deleted wit the last element
+        usersTasks[msg.sender][_id] = task;
 
-        for (uint i = _id; i < usersTasks[msg.sender].length-1; i++){
-            usersTasks[msg.sender][i] = usersTasks[msg.sender][i+1];
-        }
-
-        usersTasks[msg.sender].pop(); // deletes last element
+        // Delete last element
+        usersTasks[msg.sender].pop();
     }
 
     
