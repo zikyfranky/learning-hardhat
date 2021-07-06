@@ -16,7 +16,7 @@ contract Todo {
 
     modifier taskExists(address _user, uint256 _id) {
         uint256 uTaskLength = usersTasks[_user].length;
-        require(_id <= uTaskLength, "Index doesn't exists");
+        require(_id < uTaskLength, "Index doesn't exists");
         _;
     }
 
