@@ -86,5 +86,11 @@ describe("TODO", function() {
     expect(oldTasks.length).gt(newTasks.length);
   });
 
+  
+  it("Should Revert", async function () {
+    await expect(todo.connect(second).removeUserTask(0)).to.be.revertedWith(
+      "Index doesn't exists"
+    );
+  });
 
 });
